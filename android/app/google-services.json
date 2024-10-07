@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1035737767250",
+    "project_id": "catalog-app-b65db",
+    "storage_bucket": "catalog-app-b65db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035737767250:android:03029b7b03fb7af6d6ee8b",
+        "android_client_info": {
+          "package_name": "com.example.kings_connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGB2T-95mbmuT59V2z-QJs3z5TCRokl7M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
