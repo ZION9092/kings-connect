@@ -46,7 +46,7 @@ class OnboardingPage extends StatelessWidget {
             ),
           ),
           onPressed: (){
-           Navigator.pushReplacementNamed(context, '/login');
+           Navigator.pushReplacementNamed(context, '/home');
           },
               child: const Text(
                 'Get Started',

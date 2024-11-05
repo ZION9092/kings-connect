@@ -24,9 +24,7 @@ class _CreditCardInputFormState extends State<CreditCardInputForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Credit Card'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
+        backgroundColor: AppColors.primary,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -121,6 +119,7 @@ class _CreditCardInputFormState extends State<CreditCardInputForm> {
           ),
         ),
       ),
+      backgroundColor: AppColors.white,
     );
   }
 
@@ -132,21 +131,43 @@ class _CreditCardInputFormState extends State<CreditCardInputForm> {
     Widget? suffixIcon,
   }) {
     return TextFormField(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        suffixIcon: suffixIcon,
+  decoration: InputDecoration(
+    labelText: label,
+    labelStyle: const TextStyle(color: AppColors.cardColor), // Hint text color
+    border: const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: AppColors.primary, // Default border color when not focused
       ),
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      onSaved: onSaved,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'This field is required';
-        }
-        return null;
-      },
-    );
+    ),
+    focusedBorder: const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: AppColors.primary, // Border color when focused
+        width: 2.0, // You can customize the width as well
+      ),
+    ),
+    enabledBorder: const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: AppColors.primary, // Border color when enabled but not focused
+        width: 2.0,
+      ),
+    ),
+    suffixIcon: suffixIcon,
+    hintStyle: const TextStyle(
+      color: AppColors.cardColor, // Color for hint text
+    ),
+  ),
+  keyboardType: keyboardType,
+  inputFormatters: inputFormatters,
+  cursorColor: AppColors.primary, // Set the cursor color
+  onSaved: onSaved,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  },
+);
+
   }
 
   void _submitForm() {

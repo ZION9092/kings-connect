@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kings_connect/Main%20app/chechkout_screen.dart';
 import 'package:kings_connect/constants/colors.dart';
 import 'package:kings_connect/constants/font_sizes.dart';
 import 'package:kings_connect/controllers/cart_controller.dart';
@@ -18,7 +19,8 @@ class CartScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/home');
+             Navigator.popAndPushNamed(context, '/home'); // This removes all previous routes from the stack.
+              
             },
             child: const Icon(
               Icons.arrow_back_ios,
@@ -67,6 +69,10 @@ class CartScreen extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Navigate to the checkout screen or handle checkout
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CheckoutScreen()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,

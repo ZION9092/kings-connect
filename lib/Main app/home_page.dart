@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kings_connect/constants/colors.dart';
 import 'package:kings_connect/constants/font_sizes.dart';
 import 'package:kings_connect/models/laptop_model.dart';
+import 'package:kings_connect/providers/cart_page.dart';
 import 'package:kings_connect/widgets/product_card.dart';
 //import 'package:kings_connect/widgets/product_card.dart'; // Import the ProductCard widget
 
@@ -74,15 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacementNamed(context, '/cart');
-                        },
-                        child: const Icon(
-                          Icons.shopping_cart,
-                          color: AppColors.white,
-                        ),
-                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const CartScreen()));
+                          },
+                          child: const Icon(Icons.shopping_cart))
                     ],
                   ),
                 ),
@@ -261,15 +261,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: products.length,
                             itemBuilder: (context, index) {
                               return ProductCard(
-                                 product: Laptop(
-                                 name: products[index]['name'] ?? 'Unknown',
-                                 imagePath: products[index]['image'] ?? 'assets/default_image.png',
-                                 price: products[index]['price'] ?? '1000',
-
-                                 description: products[index]['description'] ?? 'No description available',
-                                  ),
-                                );
-                              },
+                                product: Laptop(
+                                  name: products[index]['name'] ?? 'Unknown',
+                                  imagePath: products[index]['image'] ??
+                                      'assets/default_image.png',
+                                  price: products[index]['price'] ?? '1000',
+                                  description: products[index]['description'] ??
+                                      'No description available',
+                                ),
+                              );
+                            },
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                           ),

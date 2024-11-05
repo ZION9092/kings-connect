@@ -51,6 +51,7 @@ dependencies:
   shared_preferences: ^2.3.2
   firebase_storage: ^12.3.2
   cloud_firestore: ^5.4.3
+  easy_stepper: ^0.8.5+1
   
 
 dev_dependencies:

@@ -5,6 +5,8 @@ import 'package:kings_connect/constants/font_sizes.dart';
 import 'package:kings_connect/controllers/cart_controller.dart';
 import 'package:kings_connect/controllers/product_detail_controller.dart';
 import 'package:kings_connect/models/laptop_model.dart';
+import 'package:kings_connect/providers/login_controller_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
   final Laptop product;
@@ -17,16 +19,19 @@ class ProductDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quantity = ref.watch(productDetailProvider);
-    final cartController = ref.watch(cartProvider);
+    final cartItems = ref.watch(cartProvider);
+    final cartController = ref.read(cartProvider.notifier);
+    final loginController = ref.read(loginControllerProvider); // Add this line
 
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.arrow_back_ios, color: AppColors.white)),
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back_ios, color: AppColors.white),
+        ),
         backgroundColor: AppColors.primary,
         title: const Text(
           'Product Details',
@@ -44,14 +49,14 @@ class ProductDetailScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
-              product.imagePath,  // Access product's image
+              product.imagePath,
               height: 250,
               width: double.infinity,
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 20),
             Text(
-              product.name,  // Access product's name
+              product.name,
               style: const TextStyle(
                 fontSize: FontSizes.headline4,
                 fontWeight: FontSizes.bold,
@@ -61,7 +66,7 @@ class ProductDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              '\$${product.price}',  // Access product's price
+              '\$${product.price}',
               style: const TextStyle(
                 fontSize: FontSizes.headline5,
                 fontWeight: FontSizes.bold,
@@ -89,7 +94,8 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.remove, color: AppColors.white),
-                    onPressed: () => ref.read(productDetailProvider.notifier).decrementQuantity(),
+                    onPressed: () =>
+                        ref.read(productDetailProvider.notifier).decrementQuantity(),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -110,7 +116,8 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.add, color: AppColors.white),
-                    onPressed: () => ref.read(productDetailProvider.notifier).incrementQuantity(),
+                    onPressed: () =>
+                        ref.read(productDetailProvider.notifier).incrementQuantity(),
                   ),
                 ),
                 const Spacer(),
@@ -123,25 +130,34 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   onPressed: () {
-                    final isInCart = cartController.any((item) => item['name'] == product.name);  // Check by product name
-                    if (isInCart) {
-                      ref.read(cartProvider.notifier).removeFromCart({
-                        'image': product.imagePath,
-                        'name': product.name,
-                        'price': product.price,
-                        'quantity': quantity,
-                      });
+                    // Check if the user is logged in
+                    final isLoggedIn = loginController.checkIfUserIsLoggedIn();
+
+                    if (!isLoggedIn) {
+                      // Prompt for login or registration
+                      showLoginPrompt(context);
                     } else {
-                      ref.read(cartProvider.notifier).addToCart({
-                        'image': product.imagePath,
-                        'name': product.name,
-                        'price': product.price,
-                        'quantity': quantity,
-                      });
+                      // Proceed with adding/removing from cart
+                      final isInCart = cartItems.any((item) => item['name'] == product.name);
+                      if (isInCart) {
+                        cartController.removeFromCart({
+                          'image': product.imagePath,
+                          'name': product.name,
+                          'price': product.price,
+                          'quantity': quantity,
+                        });
+                      } else {
+                        cartController.addToCart({
+                          'image': product.imagePath,
+                          'name': product.name,
+                          'price': product.price,
+                          'quantity': quantity,
+                        });
+                      }
                     }
                   },
                   child: Text(
-                    cartController.any((item) => item['name'] == product.name)
+                    cartItems.any((item) => item['name'] == product.name)
                         ? 'Remove from Cart'
                         : 'Add to Cart',
                     style: const TextStyle(
@@ -159,4 +175,42 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 }
+
+
+  // Check if user is logged in by checking for token in shared preferences
+  Future<bool> checkIfUserIsLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('login_token'); // Check for login token
+    return token != null;
+  }
+
+  // Show login prompt
+  void showLoginPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Login Required'),
+          content: const Text('You need to be logged in to add items to your cart. Do you want to log in or register?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/login'); // Close the dialog and go to login
+              },
+              child: const Text('Login'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/register'); // Close the dialog and go to register
+              },
+              child: const Text('Register'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
 

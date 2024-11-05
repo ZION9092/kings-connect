@@ -10,6 +10,11 @@ class LoginController {
 
   bool get isObscure => _isObscure;
   bool get isLoading => _isLoading;
+  
+  bool checkIfUserIsLoggedIn() {
+  final user = FirebaseAuth.instance.currentUser;
+  return user != null;
+}
 
   final FirebaseAuth _auth = FirebaseAuth.instance; // FirebaseAuth instance
 
